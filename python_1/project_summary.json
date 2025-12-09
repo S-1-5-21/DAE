@@ -1,7 +1,7 @@
 {
     "income": {
         "Salary": 0.0,
-        "Gift": 200.0,
+        "Gift": 235.0,
         "Investment": 50.34,
         "Other": 50.49
     },
@@ -10,7 +10,7 @@
         "Housing": 0.0,
         "Transportation": 0.0,
         "Entertainment": 0.0,
-        "Health": 0.0,
+        "Health": 300.0,
         "Education": 0.0,
         "Other": 0.0
     }
