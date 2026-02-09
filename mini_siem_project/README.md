@@ -1,6 +1,6 @@
 # mini_siem_project
 
-Minimal SIEM collector API + SQLite (Phase 0)
+Mini-SIEM Data Collection API + SQLite (Phase 0)
 
 ## Requirements
 - Python

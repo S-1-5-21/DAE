@@ -7,7 +7,7 @@ from models import LogEvent
 from schemas import LogEventCreate
 from datetime import datetime
 
-app = FastAPI(title="mini-siem - collector API", version="0.1.0")
+app = FastAPI(title="Mini-SIEM Data Collection API", version="0.1.0")
 
 @app.on_event("startup")
 def on_startup():
