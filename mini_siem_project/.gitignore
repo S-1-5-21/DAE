@@ -1,0 +1,18 @@
+# Python
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtualenv
+.env
+.env.*
+.envrc
+
+# SQLite db
+data/mini_siem.db
+
+# IDE
+.vscode/
+.idea/
