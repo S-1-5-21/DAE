@@ -1,0 +1,16 @@
+[
+  {
+    "rule_name": "Failed Login Spike",
+    "event_type": "failed_login",
+    "threshold": 5,
+    "interval_seconds": 60,
+    "description": "Multiple failed logins from the same host in a short period."
+  },
+  {
+    "rule_name": "High Error Rate",
+    "event_type": "error",
+    "threshold": 10,
+    "interval_seconds": 60,
+    "description": "Spike in system errors from a single host."
+  }
+]

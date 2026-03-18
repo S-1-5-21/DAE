@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mini SIEM Dashboard</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="dashboard">
+        <header class="header">
+            <div class="logo">
+                <span class="shield">🛡️</span> Mini SIEM
+            </div>
+            <div class="status">
+                <span class="indicator live"></span> Live Feed Active
+            </div>
+        </header>
+        
+        <div class="main-content">
+            <section class="panel alerts-panel">
+                <div class="panel-header">
+                    <h2>Active Alerts</h2>
+                    <span class="badge" id="alert-count">0</span>
+                </div>
+                <div class="alerts-container" id="alerts-list">
+                    <!-- Alerts will be injected here -->
+                    <div class="empty-state">No active alerts...</div>
+                </div>
+            </section>
+            
+            <section class="panel chart-panel">
+                <div class="panel-header">
+                    <h2>Events Over Time</h2>
+                </div>
+                <div class="chart-container">
+                    <canvas id="eventsChart"></canvas>
+                </div>
+            </section>
+            
+            <section class="panel logs-panel">
+                <div class="panel-header">
+                    <h2>Recent Logs <span class="badge" id="log-count">0</span></h2>
+                    <div class="filters">
+                        <select id="filter-type">
+                            <option value="">All Types</option>
+                            <option value="failed_login">Failed Logins</option>
+                            <option value="error">Errors</option>
+                            <option value="successful_login">Success Logins</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="table-container">
+                    <table class="logs-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Host</th>
+                                <th>Event Type</th>
+                                <th>Message</th>
+                            </tr>
+                        </thead>
+                        <tbody id="logs-body">
+                            <!-- Logs will be injected here -->
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+    </div>
+    <script src="/static/main.js"></script>
+</body>
+</html>
