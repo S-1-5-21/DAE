@@ -6,7 +6,7 @@ from datetime import datetime
 API_URL = "http://localhost:8000/api/logs"
 
 HOSTS = ["web-prod-01", "web-prod-02", "db-prod-01", "mail-server-01", "workstation-102"]
-USERS = ["admin", "jsmith", "bwayne", "ckent", "pwiener"]
+USERS = ["admin", "jsmith", "bwayne", "ckent", "pwilson"]
 NORMAL_EVENTS = ["page_view", "successful_login", "file_access", "api_request"]
 
 def send_log(host, event_type, raw_message):
