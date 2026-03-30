@@ -166,9 +166,10 @@ function renderAlerts(alerts) {
             </div>
             <div class="alert-actions">
                 ${isBenign 
-                    ? `<span style="font-size:0.75rem; color: #10b981; font-weight: 500;">✓ Marked as Benign</span>` 
+                    ? `<span style="font-size:0.75rem; color: #10b981; font-weight: 500;">✓ Marked as Benign</span>
+                       <button class="btn btn-outline" onclick="updateAlertStatus(${alert.id}, 'New')" style="margin-left: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.7rem;">Unmark</button>` 
                     : `<button class="btn btn-outline" onclick="updateAlertStatus(${alert.id}, 'Benign')">Mark Benign</button>
-                       <button class="btn btn-primary" onclick="updateAlertStatus(${alert.id}, 'Investigating')">Investigate</button>`
+                       <button class="btn btn-primary" onclick="investigateAlert(${alert.id}, '${alert.host}')">Investigate</button>`
                 }
             </div>
         `;
@@ -190,6 +191,51 @@ window.updateAlertStatus = async function(id, newStatus) {
     }
 }
 
+// Handler for investigating alerts
+window.investigateAlert = async function(id, host) {
+    await updateAlertStatus(id, 'Investigating');
+    
+    // Open the modal
+    const modal = document.getElementById('investigate-modal');
+    modal.classList.remove('hidden');
+    document.getElementById('modal-title').innerText = `Investigating: ${host}`;
+    
+    try {
+        const res = await fetch(`${API_BASE}/logs?host=${host}`);
+        const logs = await res.json();
+        const tbody = document.getElementById('modal-logs-body');
+        tbody.innerHTML = '';
+        
+        if (logs.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No logs found...</td></tr>';
+            return;
+        }
+        
+        logs.forEach(log => {
+            const tr = document.createElement('tr');
+            let tagClass = 'tag-default';
+            if(log.event_type === 'error') tagClass = 'tag-error';
+            if(log.event_type === 'failed_login') tagClass = 'tag-failed_login';
+            if(log.event_type === 'successful_login') tagClass = 'tag-successful_login';
+
+            const d = new Date(log.timestamp);
+            let timeStr = "Invalid Date";
+            if(!isNaN(d.getTime())) {
+                timeStr = d.toLocaleTimeString([], { hour12: false });
+            }
+
+            tr.innerHTML = `
+                <td>${timeStr}</td>
+                <td class="${tagClass}">${log.event_type}</td>
+                <td>${log.raw_message}</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    } catch(e) {
+        console.error("Error fetching logs for host:", e);
+    }
+}
+
 // Event Listeners
 document.getElementById('filter-type').addEventListener('change', fetchLogs);
 
@@ -199,9 +245,89 @@ window.onload = () => {
     fetchLogs();
     fetchAlerts();
     
-    // Auto-refresh data every 2 seconds
+    // Clear DB Custom Modal Logic
+    document.getElementById('clear-db-btn').addEventListener('click', () => {
+        const modal = document.getElementById('clear-db-modal');
+        const actions = document.getElementById('clear-db-actions');
+        const msg = document.getElementById('clear-db-message');
+        
+        msg.innerText = "Are you sure you want to completely clear the database? All logs and alerts will be permanently deleted.";
+        msg.style.color = "";
+        actions.style.display = "flex";
+        
+        modal.classList.remove('hidden');
+    });
+
+    document.getElementById('cancel-clear-btn').addEventListener('click', () => {
+        document.getElementById('clear-db-modal').classList.add('hidden');
+    });
+
+    document.getElementById('confirm-clear-btn').addEventListener('click', async () => {
+        const actions = document.getElementById('clear-db-actions');
+        const msg = document.getElementById('clear-db-message');
+        
+        try {
+            actions.style.display = "none";
+            msg.innerText = "Clearing database...";
+            
+            await fetch(`${API_BASE}/database`, { method: 'DELETE' });
+            fetchLogs();
+            fetchAlerts();
+            if(eventsChart) {
+                eventsChart.data.labels = [];
+                eventsChart.data.datasets[0].data = [];
+                eventsChart.update();
+            }
+            
+            msg.innerText = "Database cleared successfully! New logs will begin populating automatically.";
+            msg.style.color = "var(--success)";
+            
+            setTimeout(() => {
+                document.getElementById('clear-db-modal').classList.add('hidden');
+            }, 3000);
+            
+        } catch(e) {
+            console.error("Error clearing DB:", e);
+            msg.innerText = "Error clearing database. Check console.";
+            msg.style.color = "var(--danger)";
+            setTimeout(() => {
+                document.getElementById('clear-db-modal').classList.add('hidden');
+            }, 3000);
+        }
+    });
+
+    // Theme toggle
+    const themes = ['theme-dark', 'theme-light', 'theme-dracula', 'theme-cyberpunk', 'theme-solarized'];
+    
+    const savedTheme = localStorage.getItem('theme') || 'theme-dark';
+    let currentThemeIndex = themes.indexOf(savedTheme) !== -1 ? themes.indexOf(savedTheme) : 0;
+    document.body.className = themes[currentThemeIndex];
+    document.getElementById('theme-toggle-btn').innerText = `Theme: ${themes[currentThemeIndex].replace('theme-', '')}`;
+    
+    document.getElementById('theme-toggle-btn').addEventListener('click', () => {
+        currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+        const newTheme = themes[currentThemeIndex];
+        document.body.className = newTheme;
+        localStorage.setItem('theme', newTheme);
+        document.getElementById('theme-toggle-btn').innerText = `Theme: ${newTheme.replace('theme-', '')}`;
+        
+        // Ensure chart grid blends correctly
+        if(eventsChart) {
+            const isDark = !newTheme.includes('light');
+            eventsChart.options.scales.x.grid.color = isDark ? '#334155' : '#cbd5e1';
+            eventsChart.options.scales.y.grid.color = isDark ? '#334155' : '#cbd5e1';
+            eventsChart.update();
+        }
+    });
+
+    // Close modal
+    document.getElementById('close-modal-btn').addEventListener('click', () => {
+        document.getElementById('investigate-modal').classList.add('hidden');
+    });
+    
+    // Auto-refresh data every 1 second
     setInterval(() => {
         fetchLogs();
         fetchAlerts();
-    }, 2000);
+    }, 1000);
 };

@@ -13,8 +13,15 @@ I have successfully built and verified the local Mini SIEM system. The solution 
 3. **Event Simulator ([simulator.py](file:///Users/hs13/Documents/DAE/main_project/simulator.py))**
    - Automatically generates normal traffic and injects periodic "Attack" scenarios (Brute Force or Error Spikes) to trigger the engine rules.
 4. **Interactive Dashboard (`static/`)**
-   - A premium, dark-themed responsive UI.
+   - A premium, dark-themed responsive UI (now with 5 interchangeable themes via the top nav).
    - Built with live-updating logs, an interactive Chart.js line graph, and action buttons to update alert statuses without reloading the page.
+   - **Investigate Modal**: Pop up detailed views of specific alerts without dashboard refresh conflicts.
+   - **Database Clearing**: A one-click button to reset the database and logs.
+
+## Recent Enhancements & Bug Fixes
+- **Investigate Alert Form**: Instead of fighting the dashboard's 1-second background refresh cycle, clicking "Investigate" now successfully pulls logs into a dedicated modal popup overlay that persists cleanly while you review it.
+- **Multiple Color Themes**: The "Toggle Theme" button now smoothly cycles through 5 distinct themes: `Theme: dark`, `Theme: light`, `Theme: dracula`, `Theme: cyberpunk`, and `Theme: solarized`. Chart.js graph grids automatically adapt to the specific theme's brightness.
+- **Clear DB Refinements**: The underlying `DELETE` API has been visually connected to a success confirmation alert in the frontend so that you explicitly know the database rows were dropped before the simulator immediately repopulates them.
 
 ## Validation Results
 - Verified that backend APIs rapidly ingest data without locking.
@@ -32,4 +39,13 @@ Currently, the backend and simulator are already running in the background for y
 
 If you want to restart it yourself later, open a terminal in `/Users/hs13/Documents/DAE/main_project` and run:
 1. `source venv/bin/activate && uvicorn main:app --port 8000`
-2. `source venv/bin/activate && python simulator.py`
+2. `source venv/bin/activate && python3 simulator.py`
+
+## How to Stop It
+If you are running the backend and simulator in a terminal window, simply press **`Ctrl+C`** in that terminal to stop the process.
+
+To explicitly stop any instances running in the background, open a terminal and run:
+```bash
+pkill -f uvicorn
+pkill -f "simulator.py"
+```

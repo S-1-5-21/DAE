@@ -12,6 +12,57 @@
     --font-main: 'Inter', sans-serif;
 }
 
+body.theme-light {
+    --bg-dark: #f8fafc;
+    --panel-bg: #ffffff;
+    --text-main: #0f172a;
+    --text-muted: #475569;
+    --border: #cbd5e1;
+    --danger-bg: rgba(239, 68, 68, 0.15);
+}
+
+body.theme-dracula {
+    --bg-dark: #282a36;
+    --panel-bg: #44475a;
+    --text-main: #f8f8f2;
+    --text-muted: #6272a4;
+    --accent: #bd93f9;
+    --border: #6272a4;
+    --danger: #ff5555;
+    --success: #50fa7b;
+    --warning: #f1fa8c;
+}
+
+body.theme-cyberpunk {
+    --bg-dark: #120422;
+    --panel-bg: #270642;
+    --text-main: #0abdc6;
+    --text-muted: #711c91;
+    --accent: #ea00d9;
+    --border: #ea00d9;
+    --danger: #ff003c;
+    --success: #0abdc6;
+    --warning: #fced46;
+}
+
+body.theme-solarized {
+    --bg-dark: #002b36;
+    --panel-bg: #073642;
+    --text-main: #839496;
+    --text-muted: #586e75;
+    --accent: #268bd2;
+    --border: #586e75;
+    --danger: #dc322f;
+    --success: #859900;
+    --warning: #b58900;
+}
+
+body.theme-light .logs-table th { background-color: rgba(0,0,0,0.05); }
+body.theme-light .logs-table tr:hover td { background-color: rgba(0,0,0,0.02); }
+body.theme-light .btn-outline { background-color: #ffffff; }
+body.theme-light .btn-outline:hover { background-color: #f1f5f9; border-color: #94a3b8; }
+
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -289,3 +340,63 @@ body {
     font-style: italic;
     font-size: 0.875rem;
 }
+
+/* Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 0.2s;
+}
+
+.modal-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal {
+    background-color: var(--panel-bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+.modal-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 { font-size: 1.25rem; font-weight: 600; color: var(--danger); }
+.modal-subtitle { font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1rem; }
+
+.modal-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-table-container {
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    flex-grow: 1;
+    min-height: 200px;
+}
+
+.close-btn { font-size: 1.25rem; padding: 0 0.5rem; }
+

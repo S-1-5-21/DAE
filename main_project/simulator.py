@@ -45,6 +45,34 @@ def simulate_error_spike():
         send_log(host, "error", f"Critical service failure or timeout {i+1}")
         time.sleep(0.5)
 
+def simulate_rapid_page_views():
+    print("\n--- INITIATING RAPID PAGE VIEWS SIMULATION ---")
+    host = random.choice(HOSTS)
+    for i in range(17):
+        send_log(host, "page_view", f"Requested /api/v1/data page {i+1}")
+        time.sleep(0.1)
+
+def simulate_suspicious_file_access():
+    print("\n--- INITIATING SUSPICIOUS FILE ACCESS SIMULATION ---")
+    host = random.choice(HOSTS)
+    for i in range(7):
+        send_log(host, "file_access", f"Accessed sensitive file /etc/shadow or similar {i+1}")
+        time.sleep(0.2)
+
+def simulate_high_api_request_volume():
+    print("\n--- INITIATING HIGH API REQUEST VOLUME SIMULATION ---")
+    host = random.choice(HOSTS)
+    for i in range(25):
+        send_log(host, "api_request", f"API request to /api/v1/resource {i+1}")
+        time.sleep(0.1)
+
+def simulate_multiple_successful_logins():
+    print("\n--- INITIATING MULTIPLE SUCCESSFUL LOGINS SIMULATION ---")
+    host = random.choice(HOSTS)
+    for i in range(7):
+        send_log(host, "successful_login", f"User logged in successfully from different locations {i+1}")
+        time.sleep(0.3)
+
 if __name__ == "__main__":
     print("Starting Mini SIEM Event Simulator...")
     print("Press Ctrl+C to stop.")
@@ -59,9 +87,25 @@ if __name__ == "__main__":
             
             # Occasionally trigger anomalies (roughly every ~15-30 seconds)
             if counter % 15 == 0:
-                if random.choice([True, False]):
+                anomaly_type = random.choice([
+                    "failed_logins", 
+                    "error_spike", 
+                    "rapid_page_views", 
+                    "suspicious_file_access", 
+                    "high_api_request_volume", 
+                    "multiple_successful_logins"
+                ])
+                if anomaly_type == "failed_logins":
                     simulate_attack_failed_logins()
-                else:
+                elif anomaly_type == "error_spike":
                     simulate_error_spike()
+                elif anomaly_type == "rapid_page_views":
+                    simulate_rapid_page_views()
+                elif anomaly_type == "suspicious_file_access":
+                    simulate_suspicious_file_access()
+                elif anomaly_type == "high_api_request_volume":
+                    simulate_high_api_request_volume()
+                elif anomaly_type == "multiple_successful_logins":
+                    simulate_multiple_successful_logins()
     except KeyboardInterrupt:
         print("\nSimulator stopped.")

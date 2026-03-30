@@ -59,6 +59,14 @@ def update_alert_status(alert_id: int, status_update: AlertStatusUpdate):
         conn.commit()
         return {"status": "success", "new_status": status_update.status}
 
+@app.delete("/api/database")
+def clear_database():
+    with get_db() as conn:
+        conn.execute('DELETE FROM logs')
+        conn.execute('DELETE FROM alerts')
+        conn.commit()
+    return {"status": "success", "message": "Database cleared"}
+
 @app.get("/", response_class=HTMLResponse)
 def read_root():
     index_path = os.path.join(os.path.dirname(__file__), 'static', 'index.html')
