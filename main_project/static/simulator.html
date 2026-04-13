@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Threat Simulator - Presenter Control</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .dashboard {
+            height: auto;
+            min-height: 100vh;
+        }
+        .main-content {
+            display: block;
+            overflow: visible;
+        }
+        .sim-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+        .sim-card {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+        .sim-card h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-main);
+        }
+        .sim-card p {
+            color: var(--text-muted);
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+            line-height: 1.4;
+        }
+        .sim-card .btn {
+            width: 100%;
+        }
+        
+        .status-panel {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        .status-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .toggle-btn {
+            background-color: var(--danger);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        .toggle-btn.active {
+            background-color: var(--success);
+        }
+        
+        #sim-log-output {
+            margin-top: 1rem;
+            background-color: rgba(0,0,0,0.2);
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            height: 150px;
+            overflow-y: auto;
+        }
+        
+        .log-line { margin-bottom: 0.25rem; }
+    </style>
+</head>
+<body class="theme-Dark">
+    <div class="dashboard">
+        <header class="header" style="justify-content: space-between;">
+            <div class="logo">
+                <span class="shield">⚡</span> Threat Simulator Presenter UI
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <button id="theme-toggle-btn" class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.7rem;">Toggle Theme</button>
+                <button class="toggle-btn" id="toggle-heartbeat">Enable Background Heartbeat</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem;">Mini Incidents</h2>
+            <p style="color: var(--text-muted);">Trigger deterministic, story-driven scenarios. Each burst completes in seconds and is picked up immediately by the SIEM board.</p>
+            
+            <div class="sim-grid">
+                <div class="sim-card">
+                    <div>
+                        <h3>Password Attack</h3>
+                        <p>Simulates normal behavior followed by a sudden burst of brute force failed logins against a single user, triggering threshold detection.</p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <button class="btn btn-primary" style="flex: 1;" onclick="triggerScenario('password_attack')">Trigger Once</button>
+                        <button class="btn btn-outline" id="loop-password_attack" onclick="toggleContinuous('password_attack')">Continuous</button>
+                    </div>
+                </div>
+                
+                <div class="sim-card">
+                    <div>
+                        <h3>Server Failure</h3>
+                        <p>Simulates a healthy web application state, immediately followed by a barrage of critical service timeouts and database connection errors.</p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <button class="btn btn-primary" style="flex: 1; background-color: var(--danger); border-color: var(--danger);" onclick="triggerScenario('server_failure')">Trigger Once</button>
+                        <button class="btn btn-outline" id="loop-server_failure" onclick="toggleContinuous('server_failure')">Continuous</button>
+                    </div>
+                </div>
+                
+                <div class="sim-card">
+                    <div>
+                        <h3>Suspicious File Access</h3>
+                        <p>Simulates an authorized document read, shifting into rapid, repeated read attempts on restricted system files (e.g. /etc/shadow).</p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <button class="btn btn-primary" style="flex: 1; background-color: var(--warning); color: #000; border-color: var(--warning);" onclick="triggerScenario('file_access')">Trigger Once</button>
+                        <button class="btn btn-outline" id="loop-file_access" onclick="toggleContinuous('file_access')">Continuous</button>
+                    </div>
+                </div>
+                
+                <div class="sim-card">
+                    <div>
+                        <h3>Traffic Surge</h3>
+                        <p>Simulates normal API requests that abruptly scale up into an overwhelmingly dense API flood targeting a single origin.</p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <button class="btn btn-primary" style="flex: 1; background-color: #8b5cf6; border-color: #8b5cf6;" onclick="triggerScenario('traffic_surge')">Trigger Once</button>
+                        <button class="btn btn-outline" id="loop-traffic_surge" onclick="toggleContinuous('traffic_surge')">Continuous</button>
+                    </div>
+                </div>
+                
+                <div class="sim-card">
+                    <div>
+                        <h3>Privilege Misuse</h3>
+                        <p>Simulates a standard user login, followed unexpectedly by a short burst of localized, unauthorized admin-only actions.</p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <button class="btn btn-primary" style="flex: 1; background-color: #ec4899; border-color: #ec4899;" onclick="triggerScenario('privilege_misuse')">Trigger Once</button>
+                        <button class="btn btn-outline" id="loop-privilege_misuse" onclick="toggleContinuous('privilege_misuse')">Continuous</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="status-panel">
+                <div class="status-header">
+                    <h2>Simulator Output Feed</h2>
+                    <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;" onclick="document.getElementById('sim-log-output').innerHTML=''">Clear Output</button>
+                </div>
+                <div id="sim-log-output"></div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="/static/simulator.js"></script>
+</body>
+</html>

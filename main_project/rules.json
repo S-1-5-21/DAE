@@ -1,44 +1,37 @@
 [
   {
-    "rule_name": "Failed Login Spike",
+    "rule_name": "Password Attack",
     "event_type": "failed_login",
     "threshold": 5,
     "interval_seconds": 60,
-    "description": "Multiple failed logins from the same host in a short period."
+    "description": "Brute Force Password Attack Detected: Multiple repeated authentication failures."
   },
   {
-    "rule_name": "High Error Rate",
+    "rule_name": "Server Failure",
     "event_type": "error",
-    "threshold": 10,
+    "threshold": 5,
     "interval_seconds": 60,
-    "description": "Spike in system errors from a single host."
-  },
-  {
-    "rule_name": "Rapid Page Views",
-    "event_type": "page_view",
-    "threshold": 15,
-    "interval_seconds": 60,
-    "description": "Abnormally high number of page views from a single host."
+    "description": "Critical Server Failure: Burst of critical timeouts and errors."
   },
   {
     "rule_name": "Suspicious File Access",
     "event_type": "file_access",
     "threshold": 5,
     "interval_seconds": 60,
-    "description": "Frequent file access operations from a single host."
+    "description": "Access Violation: Repeated access to restricted HR or System files."
   },
   {
-    "rule_name": "High API Request Volume",
+    "rule_name": "Traffic Surge",
     "event_type": "api_request",
-    "threshold": 20,
+    "threshold": 15,
     "interval_seconds": 60,
-    "description": "High volume of API requests from a single host."
+    "description": "API Traffic Surge: Sudden overwhelming burst of API requests."
   },
   {
-    "rule_name": "Multiple Successful Logins",
-    "event_type": "successful_login",
-    "threshold": 5,
+    "rule_name": "Privilege Misuse",
+    "event_type": "admin_action",
+    "threshold": 3,
     "interval_seconds": 60,
-    "description": "Multiple successful logins in a short timeframe."
+    "description": "Privilege Misuse: Standard user executing unauthorized admin-only actions."
   }
 ]

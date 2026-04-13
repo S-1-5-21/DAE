@@ -74,11 +74,3 @@ def read_root():
         with open(index_path, 'r') as f:
             return HTMLResponse(content=f.read())
     return HTMLResponse(content="<h1>Dashboard not found</h1><p>Ensure static/index.html is created.</p>")
-
-@app.get("/simulator", response_class=HTMLResponse)
-def read_simulator():
-    sim_path = os.path.join(os.path.dirname(__file__), 'static', 'simulator.html')
-    if os.path.exists(sim_path):
-        with open(sim_path, 'r') as f:
-            return HTMLResponse(content=f.read())
-    return HTMLResponse(content="<h1>Simulator not found</h1><p>Ensure static/simulator.html is created.</p>")

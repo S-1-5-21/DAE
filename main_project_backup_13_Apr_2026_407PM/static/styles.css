@@ -58,7 +58,7 @@ body.theme-Solarized {
 }
 
 body.theme-light .logs-table th {
-    background-color: var(--bg-dark);
+    background-color: rgba(0, 0, 0, 0.05);
 }
 
 body.theme-light .logs-table tr:hover td {
@@ -336,7 +336,7 @@ body {
 }
 
 .logs-table th {
-    background-color: var(--bg-dark);
+    background-color: rgba(0, 0, 0, 0.2);
     font-weight: 600;
     color: var(--text-muted);
     position: sticky;

@@ -1,13 +1,18 @@
 import requests
 import time
 import random
+import threading
+import sys
 from datetime import datetime
 
 API_URL = "http://localhost:8000/api/logs"
 
-HOSTS = ["web-prod-01", "web-prod-02", "db-prod-01", "mail-server-01", "workstation-102"]
-USERS = ["admin", "jsmith", "bwayne", "ckent", "pwilson"]
-NORMAL_EVENTS = ["page_view", "successful_login", "file_access", "api_request"]
+WEB_HOSTS = ["web-prod-01", "web-prod-02"]
+DB_HOSTS = ["db-prod-01"]
+WORKSTATIONS = ["workstation-102", "workstation-107"]
+ALL_HOSTS = WEB_HOSTS + DB_HOSTS + WORKSTATIONS
+
+USERS = ["jsmith", "bwayne", "ckent", "pwilson"]
 
 def send_log(host, event_type, raw_message):
     log_entry = {
@@ -18,94 +23,128 @@ def send_log(host, event_type, raw_message):
     }
     try:
         requests.post(API_URL, json=log_entry)
-        print(f"Sent: {host} | {event_type} | {raw_message}")
-    except requests.exceptions.RequestException as e:
-        print(f"Failed to send log (Is the backend running?): {e}")
+        print(f"[*] Sent: {host} | {event_type} | {raw_message}")
+    except requests.exceptions.RequestException:
+        pass
 
-def simulate_normal_traffic():
-    host = random.choice(HOSTS)
-    event_type = random.choice(NORMAL_EVENTS)
-    msg = f"Normal activity: {event_type} by user {random.choice(USERS)}"
-    send_log(host, event_type, msg)
+def generate_normal_event():
+    # Keep it simple and role-based
+    host_type = random.choice(["web", "db", "workstation"])
+    
+    if host_type == "web":
+        host = random.choice(WEB_HOSTS)
+        evt = random.choice(["page_view", "api_request"])
+        msg = f"Standard {evt.replace('_', ' ')} from client IP"
+        send_log(host, evt, msg)
+        
+    elif host_type == "db":
+        host = random.choice(DB_HOSTS)
+        send_log(host, "database_query", "Executed routine background query successfully")
+        
+    else:
+        host = random.choice(WORKSTATIONS)
+        user = random.choice(USERS)
+        evt = random.choice(["successful_login", "file_access"])
+        msg = f"User {user} {evt.replace('_', ' ')} routinely"
+        send_log(host, evt, msg)
 
-def simulate_attack_failed_logins():
-    print("\n--- INITIATING BRUTE FORCE SIMULATION ---")
-    host = random.choice(HOSTS)
-    user = random.choice(USERS)
-    # The rule threshold is 5 failed logins within 60s. We send 7.
-    for i in range(7):
-        send_log(host, "failed_login", f"Failed authentication for user {user} from unknown IP")
-        time.sleep(0.5)
+def heartbeat():
+    while True:
+        generate_normal_event()
+        # Sleep randomly between 1 and 4 seconds for slow, steady background traffic
+        time.sleep(random.uniform(1.0, 4.0))
 
-def simulate_error_spike():
-    print("\n--- INITIATING ERROR SPIKE SIMULATION ---")
-    host = random.choice(HOSTS)
-    # The rule threshold is 10 errors within 60s. We send 12.
-    for i in range(12):
-        send_log(host, "error", f"Critical service failure or timeout {i+1}")
-        time.sleep(0.5)
+# --- SCENARIOS ---
 
-def simulate_rapid_page_views():
-    print("\n--- INITIATING RAPID PAGE VIEWS SIMULATION ---")
-    host = random.choice(HOSTS)
-    for i in range(17):
-        send_log(host, "page_view", f"Requested /api/v1/data page {i+1}")
-        time.sleep(0.1)
-
-def simulate_suspicious_file_access():
-    print("\n--- INITIATING SUSPICIOUS FILE ACCESS SIMULATION ---")
-    host = random.choice(HOSTS)
-    for i in range(7):
-        send_log(host, "file_access", f"Accessed sensitive file /etc/shadow or similar {i+1}")
-        time.sleep(0.2)
-
-def simulate_high_api_request_volume():
-    print("\n--- INITIATING HIGH API REQUEST VOLUME SIMULATION ---")
-    host = random.choice(HOSTS)
-    for i in range(25):
-        send_log(host, "api_request", f"API request to /api/v1/resource {i+1}")
-        time.sleep(0.1)
-
-def simulate_multiple_successful_logins():
-    print("\n--- INITIATING MULTIPLE SUCCESSFUL LOGINS SIMULATION ---")
-    host = random.choice(HOSTS)
-    for i in range(7):
-        send_log(host, "successful_login", f"User logged in successfully from different locations {i+1}")
+def trigger_password_attack():
+    host = random.choice(WORKSTATIONS)
+    target_user = "bwayne"
+    print("\n[+] Triggering: Password Attack...")
+    send_log(host, "successful_login", f"User jsmith logged in successfully.")
+    time.sleep(1)
+    
+    for i in range(6):
+        send_log(host, "failed_login", f"Repeated authentication failure for user {target_user}")
         time.sleep(0.3)
+    print("[+] Done.\n")
+
+def trigger_server_failure():
+    host = random.choice(WEB_HOSTS)
+    print("\n[+] Triggering: Server Failure...")
+    send_log(host, "page_view", "User loaded the dashboard successfully.")
+    time.sleep(1)
+    
+    for i in range(6):
+        send_log(host, "error", f"Critical service timeout: Database connection lost ({i+1})")
+        time.sleep(0.4)
+    print("[+] Done.\n")
+
+def trigger_suspicious_file_access():
+    host = random.choice(WORKSTATIONS)
+    print("\n[+] Triggering: Suspicious File Access...")
+    send_log(host, "file_access", "User accessed public document /docs/policy.pdf")
+    time.sleep(1)
+    
+    for i in range(6):
+        send_log(host, "file_access", f"Restricted file access: Read attempt on /etc/shadow or HR database ({i+1})")
+        time.sleep(0.3)
+    print("[+] Done.\n")
+
+def trigger_traffic_surge():
+    host = random.choice(WEB_HOSTS)
+    print("\n[+] Triggering: Traffic Surge...")
+    for _ in range(2):
+        send_log(host, "api_request", "Normal API request /api/v1/health")
+        time.sleep(0.5)
+        
+    for i in range(16):
+        send_log(host, "api_request", f"Overwhelming API request flood from single origin ({i+1})")
+        time.sleep(0.05)
+    print("[+] Done.\n")
+
+def trigger_privilege_misuse():
+    host = random.choice(WORKSTATIONS)
+    user = random.choice(["jsmith", "ckent"])
+    print("\n[+] Triggering: Privilege Misuse...")
+    send_log(host, "successful_login", f"Standard user {user} logged in.")
+    time.sleep(1)
+    
+    # 4 admin actions to trigger threshold of 3
+    for i in range(4):
+        send_log(host, "admin_action", f"Admin-only action executed: {user} modified security group policies.")
+        time.sleep(0.5)
+    print("[+] Done.\n")
+
+def start_interactive():
+    # Start heartbeat in a daemon thread so it dies with the main program
+    t = threading.Thread(target=heartbeat, daemon=True)
+    t.start()
+    
+    while True:
+        print("\n--- Presenter Simulator Menu ---")
+        print("1. Password Attack")
+        print("2. Server Failure")
+        print("3. Suspicious File Access")
+        print("4. Traffic Surge")
+        print("5. Privilege Misuse")
+        print("Q. Quit")
+        choice = input("Select an incident to trigger: ").strip().lower()
+        
+        if choice == '1':
+            trigger_password_attack()
+        elif choice == '2':
+            trigger_server_failure()
+        elif choice == '3':
+            trigger_suspicious_file_access()
+        elif choice == '4':
+            trigger_traffic_surge()
+        elif choice == '5':
+            trigger_privilege_misuse()
+        elif choice == 'q':
+            print("Exiting...")
+            sys.exit(0)
+        else:
+            print("Invalid choice. Try again.")
 
 if __name__ == "__main__":
-    print("Starting Mini SIEM Event Simulator...")
-    print("Press Ctrl+C to stop.")
-    
-    counter = 0
-    try:
-        while True:
-            # Send normal traffic
-            simulate_normal_traffic()
-            time.sleep(random.uniform(0.5, 2.0))
-            counter += 1
-            
-            # Occasionally trigger anomalies (roughly every ~15-30 seconds)
-            if counter % 15 == 0:
-                anomaly_type = random.choice([
-                    "failed_logins", 
-                    "error_spike", 
-                    "rapid_page_views", 
-                    "suspicious_file_access", 
-                    "high_api_request_volume", 
-                    "multiple_successful_logins"
-                ])
-                if anomaly_type == "failed_logins":
-                    simulate_attack_failed_logins()
-                elif anomaly_type == "error_spike":
-                    simulate_error_spike()
-                elif anomaly_type == "rapid_page_views":
-                    simulate_rapid_page_views()
-                elif anomaly_type == "suspicious_file_access":
-                    simulate_suspicious_file_access()
-                elif anomaly_type == "high_api_request_volume":
-                    simulate_high_api_request_volume()
-                elif anomaly_type == "multiple_successful_logins":
-                    simulate_multiple_successful_logins()
-    except KeyboardInterrupt:
-        print("\nSimulator stopped.")
+    start_interactive()

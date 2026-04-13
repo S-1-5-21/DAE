@@ -320,23 +320,6 @@ window.onload = () => {
         }
     });
 
-    window.addEventListener('storage', (e) => {
-        if(e.key === 'theme') {
-            document.body.className = e.newValue;
-            currentThemeIndex = themes.indexOf(e.newValue);
-            // In case we receive an invalid theme from elsewhere (safeguard)
-            if (currentThemeIndex === -1) currentThemeIndex = 0; 
-            
-            document.getElementById('theme-toggle-btn').innerText = `Theme: ${e.newValue.replace('theme-', '')}`;
-            if (eventsChart) {
-                const isDark = !e.newValue.includes('Light');
-                eventsChart.options.scales.x.grid.color = isDark ? '#334155' : '#cbd5e1';
-                eventsChart.options.scales.y.grid.color = isDark ? '#334155' : '#cbd5e1';
-                eventsChart.update();
-            }
-        }
-    });
-
     // Close modal
     document.getElementById('close-modal-btn').addEventListener('click', () => {
         document.getElementById('investigate-modal').classList.add('hidden');
