@@ -1,13 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mini SIEM Dashboard</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/styles.css?v=3">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
+
 <body>
     <div class="dashboard">
         <header class="header">
@@ -15,12 +17,15 @@
                 <span class="shield">🛡️</span> Mini SIEM
             </div>
             <div class="status">
-                <button id="theme-toggle-btn" class="btn btn-outline" style="margin-right: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.7rem;">Toggle Theme</button>
-                <button id="clear-db-btn" class="btn btn-outline" style="margin-right: 1rem; color: var(--danger); border-color: var(--danger); padding: 0.25rem 0.5rem; font-size: 0.7rem;">Clear DB</button>
+                <button id="theme-toggle-btn" class="btn btn-outline"
+                    style="margin-right: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.7rem;">Toggle Theme</button>
+                <button id="clear-db-btn" class="btn btn-outline"
+                    style="margin-right: 1rem; color: var(--danger); border-color: var(--danger); padding: 0.25rem 0.5rem; font-size: 0.7rem;">Clear
+                    DB</button>
                 <span class="indicator live"></span> Live Feed Active
             </div>
         </header>
-        
+
         <div class="main-content">
             <section class="panel alerts-panel">
                 <div class="panel-header">
@@ -32,7 +37,7 @@
                     <div class="empty-state">No active alerts...</div>
                 </div>
             </section>
-            
+
             <section class="panel chart-panel">
                 <div class="panel-header">
                     <h2>Events Over Time</h2>
@@ -41,7 +46,7 @@
                     <canvas id="eventsChart"></canvas>
                 </div>
             </section>
-            
+
             <section class="panel logs-panel">
                 <div class="panel-header">
                     <h2>Recent Logs <span class="badge" id="log-count">0</span></h2>
@@ -107,10 +112,13 @@
                 <h2>Clear Database</h2>
             </div>
             <div class="modal-body">
-                <p id="clear-db-message">Are you sure you want to completely clear the database? All logs and alerts will be permanently deleted.</p>
-                <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 0.5rem;" id="clear-db-actions">
+                <p id="clear-db-message">Are you sure you want to completely clear the database? All logs and alerts
+                    will be permanently deleted.</p>
+                <div style="margin-top: 1.5rem; display: flex; justify-content: flex-end; gap: 0.5rem;"
+                    id="clear-db-actions">
                     <button id="cancel-clear-btn" class="btn btn-outline">Cancel</button>
-                    <button id="confirm-clear-btn" class="btn" style="background-color: var(--danger); color: white;">Yes, Clear Database</button>
+                    <button id="confirm-clear-btn" class="btn"
+                        style="background-color: var(--danger); color: white;">Yes, Clear Database</button>
                 </div>
             </div>
         </div>
@@ -118,4 +126,5 @@
 
     <script src="/static/main.js"></script>
 </body>
+
 </html>
