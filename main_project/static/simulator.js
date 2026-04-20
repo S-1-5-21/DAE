@@ -5,7 +5,7 @@ const DB_HOSTS = ["db-prod-01"];
 const WORKSTATIONS = ["workstation-102", "workstation-107"];
 const USERS = ["jsmith", "bwayne", "ckent", "pwilson"];
 
-let heartbeatTimer = null;
+let activityTimer = null;
 const continuousLoops = {};
 
 function randomChoice(arr) {
@@ -66,33 +66,33 @@ async function generateNormalEvent() {
     }
 }
 
-function startHeartbeat() {
+function startActivity() {
     (async function loop() {
-        if(!heartbeatTimer) return;
+        if(!activityTimer) return;
         await generateNormalEvent();
         const nextDelay = 1000 + Math.random() * 3000; // 1 to 4 seconds
-        heartbeatTimer = setTimeout(loop, nextDelay);
+        activityTimer = setTimeout(loop, nextDelay);
     })();
 }
 
-function toggleHeartbeat() {
-    const btn = document.getElementById('toggle-heartbeat');
-    if(heartbeatTimer) {
-        clearTimeout(heartbeatTimer);
-        heartbeatTimer = null;
+function toggleActivity() {
+    const btn = document.getElementById('toggle-activity');
+    if(activityTimer) {
+        clearTimeout(activityTimer);
+        activityTimer = null;
         btn.classList.remove('active');
-        btn.innerText = "Enable Background Heartbeat";
-        logToOutput("Heartbeat Disabled", "var(--warning)");
+        btn.innerText = "Enable Background Activity";
+        logToOutput("Background Activity Disabled", "var(--warning)");
     } else {
-        heartbeatTimer = setTimeout(() => {}, 0); // dummy init
+        activityTimer = setTimeout(() => {}, 0); // dummy init
         btn.classList.add('active');
-        btn.innerText = "Disable Background Heartbeat";
-        logToOutput("Heartbeat Enabled - Generating normal traffic...", "var(--success)");
-        startHeartbeat();
+        btn.innerText = "Disable Background Activity";
+        logToOutput("Background Activity Enabled - Generating normal traffic...", "var(--success)");
+        startActivity();
     }
 }
 
-document.getElementById('toggle-heartbeat').addEventListener('click', toggleHeartbeat);
+document.getElementById('toggle-activity').addEventListener('click', toggleActivity);
 
 // --- SCENARIO TRIGGERS ---
 
@@ -100,14 +100,12 @@ window.toggleContinuous = async function(scenario) {
     const btn = document.getElementById(`loop-${scenario}`);
     if (continuousLoops[scenario]) {
         continuousLoops[scenario] = false;
-        btn.classList.remove('active', 'btn-primary');
-        btn.classList.add('btn-outline');
+        btn.classList.remove('active');
         btn.innerText = "Continuous";
         logToOutput(`<<< STOPPED CONTINUOUS: ${scenario.toUpperCase()}`, "#ec4899");
     } else {
         continuousLoops[scenario] = true;
-        btn.classList.add('active', 'btn-primary');
-        btn.classList.remove('btn-outline');
+        btn.classList.add('active');
         btn.innerText = "Running...";
         logToOutput(`>>> STARTING CONTINUOUS: ${scenario.toUpperCase()}`, "#ec4899");
         

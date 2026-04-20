@@ -67,7 +67,8 @@
         }
 
         .toggle-btn {
-            background-color: #10b981; /* Dark theme success */
+            background-color: #10b981;
+            /* Dark theme success */
             color: white;
             border: none;
             padding: 0.5rem 1rem;
@@ -78,7 +79,8 @@
         }
 
         .toggle-btn.active {
-            background-color: #ef4444; /* Dark theme danger */
+            background-color: #ef4444;
+            /* Dark theme danger */
         }
 
         #sim-log-output {
@@ -108,7 +110,7 @@
             <div style="display: flex; gap: 0.5rem; align-items: center;">
                 <button id="theme-toggle-btn" class="btn btn-outline"
                     style="padding: 0.25rem 0.5rem; font-size: 0.7rem;">Toggle Theme</button>
-                <button class="toggle-btn" id="toggle-heartbeat">Enable Background Heartbeat</button>
+                <button class="toggle-btn" id="toggle-activity">Enable Background Activity</button>
             </div>
         </header>
 
@@ -125,9 +127,11 @@
                             single user, triggering threshold detection.</p>
                     </div>
                     <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
-                        <button class="btn btn-primary" style="flex: 1;"
+                        <button class="btn btn-primary"
+                            style="background-color: #268bd2; color: #000; border-color: #268bd2;"
                             onclick="triggerScenario('password_attack')">Trigger Once</button>
-                        <button class="btn btn-outline" id="loop-password_attack"
+                        <button class="btn btn-primary" id="loop-password_attack"
+                            style="background-color: #268bd2; color: #000; border-color: #268bd2;"
                             onclick="toggleContinuous('password_attack')">Continuous</button>
                     </div>
                 </div>
@@ -140,9 +144,10 @@
                     </div>
                     <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
                         <button class="btn btn-primary"
-                            style="flex: 1; background-color: var(--danger); border-color: var(--danger);"
+                            style="background-color: #ef4444; color: #000; border-color: #ef4444;"
                             onclick="triggerScenario('server_failure')">Trigger Once</button>
-                        <button class="btn btn-outline" id="loop-server_failure"
+                        <button class="btn btn-primary" id="loop-server_failure"
+                            style="background-color: #ef4444; color: #000; border-color: #ef4444;"
                             onclick="toggleContinuous('server_failure')">Continuous</button>
                     </div>
                 </div>
@@ -155,9 +160,10 @@
                     </div>
                     <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
                         <button class="btn btn-primary"
-                            style="flex: 1; background-color: var(--warning); color: #000; border-color: var(--warning);"
+                            style="background-color: #f59e0b; color: #000; border-color: #f59e0b;"
                             onclick="triggerScenario('file_access')">Trigger Once</button>
-                        <button class="btn btn-outline" id="loop-file_access"
+                        <button class="btn btn-primary" id="loop-file_access"
+                            style="background-color: #f59e0b; color: #000; border-color: #f59e0b;"
                             onclick="toggleContinuous('file_access')">Continuous</button>
                     </div>
                 </div>
@@ -170,9 +176,10 @@
                     </div>
                     <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
                         <button class="btn btn-primary"
-                            style="flex: 1; background-color: #8b5cf6; border-color: #8b5cf6;"
+                            style="background-color: #8b5cf6; color: #000; border-color: #8b5cf6;"
                             onclick="triggerScenario('traffic_surge')">Trigger Once</button>
-                        <button class="btn btn-outline" id="loop-traffic_surge"
+                        <button class="btn btn-primary" id="loop-traffic_surge"
+                            style="background-color: #8b5cf6; color: #000; border-color: #8b5cf6;"
                             onclick="toggleContinuous('traffic_surge')">Continuous</button>
                     </div>
                 </div>
@@ -185,9 +192,10 @@
                     </div>
                     <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
                         <button class="btn btn-primary"
-                            style="flex: 1; background-color: #ec4899; border-color: #ec4899;"
+                            style="background-color: #ec4899; color: #000; border-color: #ec4899;"
                             onclick="triggerScenario('privilege_misuse')">Trigger Once</button>
-                        <button class="btn btn-outline" id="loop-privilege_misuse"
+                        <button class="btn btn-primary" id="loop-privilege_misuse"
+                            style="background-color: #ec4899; color: #000; border-color: #ec4899;"
                             onclick="toggleContinuous('privilege_misuse')">Continuous</button>
                     </div>
                 </div>
