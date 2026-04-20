@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Threat Simulator - Presenter Control</title>
+    <title>Threat Simulator</title>
     <link rel="stylesheet" href="/static/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -70,9 +70,9 @@
             background-color: #10b981;
             /* Dark theme success */
             color: white;
-            border: none;
+            border: 1px solid white;
             padding: 0.5rem 1rem;
-            border-radius: 8px;
+            border-radius: 4px;
             font-weight: 500;
             cursor: pointer;
             transition: background-color 0.2s;
@@ -105,12 +105,13 @@
     <div class="dashboard">
         <header class="header" style="justify-content: space-between;">
             <div class="logo">
-                <span class="shield">⚡</span> Threat Simulator Presenter UI
+                Threat Simulator
             </div>
             <div style="display: flex; gap: 0.5rem; align-items: center;">
                 <button id="theme-toggle-btn" class="btn btn-outline"
                     style="padding: 0.25rem 0.5rem; font-size: 0.7rem;">Toggle Theme</button>
-                <button class="toggle-btn" id="toggle-activity">Enable Background Activity</button>
+                <button class="toggle-btn" id="toggle-activity"
+                    style="padding: 0.25rem 0.5rem; font-size: 0.7rem;">Enable Background Activity</button>
             </div>
         </header>
 
@@ -199,6 +200,54 @@
                             onclick="toggleContinuous('privilege_misuse')">Continuous</button>
                     </div>
                 </div>
+
+                <div class="sim-card">
+                    <div>
+                        <h3>Network Port Scan</h3>
+                        <p>Simulates a rapid sequence of connection attempts across various ports, indicating a network
+                            reconnaissance attack.</p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <button class="btn btn-primary"
+                            style="background-color: #14b8a6; color: #000; border-color: #14b8a6;"
+                            onclick="triggerScenario('port_scan')">Trigger Once</button>
+                        <button class="btn btn-primary" id="loop-port_scan"
+                            style="background-color: #14b8a6; color: #000; border-color: #14b8a6;"
+                            onclick="toggleContinuous('port_scan')">Continuous</button>
+                    </div>
+                </div>
+
+                <div class="sim-card">
+                    <div>
+                        <h3>Data Exfiltration</h3>
+                        <p>Simulates an authorized database query followed by multiple unusually large outbound data
+                            transfers to an unknown IP.</p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <button class="btn btn-primary"
+                            style="background-color: #93ea08; color: #000; border-color: #93ea08;"
+                            onclick="triggerScenario('data_exfiltration')">Trigger Once</button>
+                        <button class="btn btn-primary" id="loop-data_exfiltration"
+                            style="background-color: #93ea08; color: #000; border-color: #93ea08;"
+                            onclick="toggleContinuous('data_exfiltration')">Continuous</button>
+                    </div>
+                </div>
+
+                <div class="sim-card">
+                    <div>
+                        <h3>Malware Execution</h3>
+                        <p>Simulates a normal file download triggering an immediate sequence of suspicious hidden shell
+                            processes.</p>
+                    </div>
+                    <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                        <button class="btn btn-primary"
+                            style="background-color: #6366f1; color: #000; border-color: #6366f1;"
+                            onclick="triggerScenario('malware_execution')">Trigger Once</button>
+                        <button class="btn btn-primary" id="loop-malware_execution"
+                            style="background-color: #6366f1; color: #000; border-color: #6366f1;"
+                            onclick="toggleContinuous('malware_execution')">Continuous</button>
+                    </div>
+                </div>
             </div>
 
             <div class="status-panel">
@@ -212,7 +261,7 @@
         </div>
     </div>
 
-    <script src="/static/simulator.js"></script>
+    <script src="/static/simulator.js?v=2"></script>
 </body>
 
 </html>

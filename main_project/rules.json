@@ -33,5 +33,26 @@
     "threshold": 3,
     "interval_seconds": 60,
     "description": "Privilege Misuse: Standard user executing unauthorized admin-only actions."
+  },
+  {
+    "rule_name": "Network Port Scan",
+    "event_type": "network_connection",
+    "threshold": 5,
+    "interval_seconds": 60,
+    "description": "Port Scan Detected: Rapid sequence of port connections from single origin."
+  },
+  {
+    "rule_name": "Data Exfiltration",
+    "event_type": "data_transfer",
+    "threshold": 3,
+    "interval_seconds": 60,
+    "description": "Data Exfiltration: Multiple unusually large outbound data transfers."
+  },
+  {
+    "rule_name": "Malware Execution",
+    "event_type": "process_creation",
+    "threshold": 2,
+    "interval_seconds": 60,
+    "description": "Malware Execution: Suspicious process spawned rapidly."
   }
 ]

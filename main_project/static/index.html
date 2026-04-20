@@ -14,7 +14,7 @@
     <div class="dashboard">
         <header class="header">
             <div class="logo">
-                <span class="shield">🛡️</span> Mini SIEM
+                Mini SIEM
             </div>
             <div class="status">
                 <button id="theme-toggle-btn" class="btn btn-outline"
@@ -78,32 +78,7 @@
         </div>
     </div>
 
-    <!-- Alert Investigation Modal -->
-    <div id="investigate-modal" class="modal-overlay hidden">
-        <div class="modal">
-            <div class="modal-header">
-                <h2 id="modal-title">Investigating Host</h2>
-                <button id="close-modal-btn" class="btn btn-outline close-btn">&times;</button>
-            </div>
-            <div class="modal-body">
-                <p class="modal-subtitle">Showing recent logs for this host...</p>
-                <div class="table-container modal-table-container">
-                    <table class="logs-table">
-                        <thead>
-                            <tr>
-                                <th>Timestamp</th>
-                                <th>Event Type</th>
-                                <th>Message</th>
-                            </tr>
-                        </thead>
-                        <tbody id="modal-logs-body">
-                            <!-- Logs will be injected here -->
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-    </div>
+
 
     <!-- Clear DB Custom Modal -->
     <div id="clear-db-modal" class="modal-overlay hidden">
@@ -124,7 +99,7 @@
         </div>
     </div>
 
-    <script src="/static/main.js"></script>
+    <script src="/static/main.js?v=2"></script>
 </body>
 
 </html>

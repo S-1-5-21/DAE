@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Investigating Threat Host</title>
+    <link rel="stylesheet" href="/static/styles.css?v=3">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        .dashboard {
+            height: auto;
+            min-height: 100vh;
+        }
+
+        .main-content {
+            display: block;
+            overflow: visible;
+        }
+
+        .investigate-panel {
+            background-color: var(--panel-bg);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            min-height: calc(100vh - 150px);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .investigate-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .investigate-header h2 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--danger);
+        }
+
+        /* Reusing some classes from styles.css for the table container */
+        .table-container {
+            border: 1px solid var(--border);
+            border-radius: 4px;
+            flex-grow: 1;
+        }
+    </style>
+</head>
+
+<body class="theme-Dark">
+    <div class="dashboard">
+        <header class="header" style="justify-content: space-between;">
+            <div class="logo">
+                Investigator
+            </div>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <button id="theme-toggle-btn" class="btn btn-outline"
+                    style="padding: 0.25rem 0.5rem; font-size: 0.7rem;">Toggle Theme</button>
+            </div>
+        </header>
+
+        <div class="main-content">
+            <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem;" id="page-title">Investigating Host
+            </h2>
+            <p style="color: var(--text-muted);">Showing all recent logs specific to this selected machine.</p>
+
+            <div class="investigate-panel">
+                <div class="investigate-header">
+                    <h2 id="target-host-display">Loading...</h2>
+                    <button class="btn btn-outline" style="padding: 0.25rem 0.5rem; font-size: 0.8rem;"
+                        onclick="fetchTargetLogs()">Refresh Logs</button>
+                </div>
+
+                <div class="table-container">
+                    <table class="logs-table">
+                        <thead>
+                            <tr>
+                                <th>Timestamp</th>
+                                <th>Event Type</th>
+                                <th>Message</th>
+                            </tr>
+                        </thead>
+                        <tbody id="investigate-logs-body">
+                            <tr>
+                                <td colspan="3" class="empty-state">Loading logs...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/investigate.js"></script>
+</body>
+
+</html>

@@ -191,48 +191,18 @@ window.updateAlertStatus = async function (id, newStatus) {
     }
 }
 
+let investigateWin = null;
+
 // Handler for investigating alerts
 window.investigateAlert = async function (id, host) {
     await updateAlertStatus(id, 'Investigating');
 
-    // Open the modal
-    const modal = document.getElementById('investigate-modal');
-    modal.classList.remove('hidden');
-    document.getElementById('modal-title').innerText = `Investigating: ${host}`;
-
-    try {
-        const res = await fetch(`${API_BASE}/logs?host=${host}`);
-        const logs = await res.json();
-        const tbody = document.getElementById('modal-logs-body');
-        tbody.innerHTML = '';
-
-        if (logs.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="3" class="empty-state">No logs found...</td></tr>';
-            return;
-        }
-
-        logs.forEach(log => {
-            const tr = document.createElement('tr');
-            let tagClass = 'tag-default';
-            if (log.event_type === 'error') tagClass = 'tag-error';
-            if (log.event_type === 'failed_login') tagClass = 'tag-failed_login';
-            if (log.event_type === 'successful_login') tagClass = 'tag-successful_login';
-
-            const d = new Date(log.timestamp);
-            let timeStr = "Invalid Date";
-            if (!isNaN(d.getTime())) {
-                timeStr = d.toLocaleTimeString([], { hour12: false });
-            }
-
-            tr.innerHTML = `
-                <td>${timeStr}</td>
-                <td class="${tagClass}">${log.event_type}</td>
-                <td>${log.raw_message}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-    } catch (e) {
-        console.error("Error fetching logs for host:", e);
+    const targetUrl = `/static/investigate.html?host=${host}`;
+    if (!investigateWin || investigateWin.closed) {
+        investigateWin = window.open(targetUrl, 'investigateWindow');
+    } else {
+        investigateWin.location.href = targetUrl;
+        investigateWin.focus();
     }
 }
 
@@ -337,10 +307,7 @@ window.onload = () => {
         }
     });
 
-    // Close modal
-    document.getElementById('close-modal-btn').addEventListener('click', () => {
-        document.getElementById('investigate-modal').classList.add('hidden');
-    });
+    // Placeholder for previous modal listener
 
     // Auto-refresh data every 1 second
     setInterval(() => {
