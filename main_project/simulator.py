@@ -28,7 +28,6 @@ def send_log(host, event_type, raw_message):
         pass
 
 def generate_normal_event():
-    # Keep it simple and role-based
     host_type = random.choice(["web", "db", "workstation"])
     
     if host_type == "web":
@@ -48,13 +47,12 @@ def generate_normal_event():
         msg = f"User {user} {evt.replace('_', ' ')} routinely"
         send_log(host, evt, msg)
 
-def heartbeat():
+def backgroundActivity():
     while True:
         generate_normal_event()
-        # Sleep randomly between 1 and 4 seconds for slow, steady background traffic
         time.sleep(random.uniform(1.0, 4.0))
 
-# --- SCENARIOS ---
+# All Scenarios
 
 def trigger_password_attack():
     host = random.choice(WORKSTATIONS)
@@ -109,15 +107,13 @@ def trigger_privilege_misuse():
     send_log(host, "successful_login", f"Standard user {user} logged in.")
     time.sleep(1)
     
-    # 4 admin actions to trigger threshold of 3
     for i in range(4):
         send_log(host, "admin_action", f"Admin-only action executed: {user} modified security group policies.")
         time.sleep(0.5)
     print("[+] Done.\n")
 
 def start_interactive():
-    # Start heartbeat in a daemon thread so it dies with the main program
-    t = threading.Thread(target=heartbeat, daemon=True)
+    t = threading.Thread(target=backgroundActivity, daemon=True)
     t.start()
     
     while True:

@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mini SIEM Dashboard</title>
-    <link rel="stylesheet" href="/static/styles.css?v=3">
+    <title>SIEM Simulator - Main Dashboard</title>
+    <link rel="stylesheet" href="/static/styles.css?v=4">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 </head>
@@ -14,14 +14,13 @@
     <div class="dashboard">
         <header class="header">
             <div class="logo">
-                Mini SIEM
+                SIEM Simulator - Main Dashboard
             </div>
             <div class="status">
                 <button id="theme-toggle-btn" class="btn btn-outline"
-                    style="margin-right: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.7rem;">Toggle Theme</button>
-                <button id="clear-db-btn" class="btn btn-outline"
-                    style="margin-right: 1rem; color: var(--danger); border-color: var(--danger); padding: 0.25rem 0.5rem; font-size: 0.7rem;">Clear
-                    DB</button>
+                    style="padding: 0.25rem 0.5rem; font-size: 0.7rem;">Toggle Theme</button>
+                <button id="clear-db-btn" class="btn"
+                    style="margin-right: 1rem; background-color: #ef4444; color: white; border: 1px solid white; padding: 0.25rem 0.5rem; font-size: 0.7rem;">Clear DB</button>
                 <span class="indicator live"></span> Live Feed Active
             </div>
         </header>
@@ -33,7 +32,6 @@
                     <span class="badge" id="alert-count">0</span>
                 </div>
                 <div class="alerts-container" id="alerts-list">
-                    <!-- Alerts will be injected here -->
                     <div class="empty-state">No active alerts...</div>
                 </div>
             </section>
@@ -69,18 +67,13 @@
                                 <th>Message</th>
                             </tr>
                         </thead>
-                        <tbody id="logs-body">
-                            <!-- Logs will be injected here -->
-                        </tbody>
+                        <tbody id="logs-body"></tbody>
                     </table>
                 </div>
             </section>
         </div>
     </div>
 
-
-
-    <!-- Clear DB Custom Modal -->
     <div id="clear-db-modal" class="modal-overlay hidden">
         <div class="modal" style="max-width: 400px;">
             <div class="modal-header">

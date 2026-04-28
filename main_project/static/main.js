@@ -1,7 +1,6 @@
 const API_BASE = 'http://localhost:8000/api';
 let eventsChart;
 
-// Initialize Chart.js
 function initChart() {
     const ctx = document.getElementById('eventsChart').getContext('2d');
     Chart.defaults.color = '#94a3b8';
@@ -48,8 +47,8 @@ function initChart() {
 function updateChart(logs) {
     if (!eventsChart) return;
 
-    // Group logs by current second to show a nice rapid flow, or by minute. 
-    // Since we generate every sec or two, let's group by minute to look like a realistic chart
+    // Group logs by current second 
+    // Group chart by minute
     const counts = {};
     logs.forEach(log => {
         const d = new Date(log.timestamp);
@@ -74,7 +73,6 @@ async function fetchLogs() {
         const res = await fetch(url);
         const logs = await res.json();
 
-        // Show total fetched in the UI
         document.getElementById('log-count').innerText = logs.length;
         renderLogs(logs);
 
@@ -105,7 +103,7 @@ function renderLogs(logs) {
         if (log.event_type === 'successful_login') tagClass = 'tag-successful_login';
 
         const d = new Date(log.timestamp);
-        // Sometimes iso format has issues, fallback if invalid
+        // ISO format breaks sometimes
         let timeStr = "Invalid Date";
         if (!isNaN(d.getTime())) {
             timeStr = d.toLocaleTimeString([], { hour12: false });
@@ -121,7 +119,6 @@ function renderLogs(logs) {
     });
 }
 
-// Fetch alerts from API
 async function fetchAlerts() {
     try {
         const res = await fetch(`${API_BASE}/alerts`);
@@ -166,7 +163,7 @@ function renderAlerts(alerts) {
             </div>
             <div class="alert-actions">
                 ${isBenign
-                ? `<span style="font-size:0.75rem; color: #10b981; font-weight: 500;">✓ Marked as Benign</span>
+                ? `<span style="font-size:0.75rem; color: #10b981; font-weight: 400;">✓ Marked as Benign</span>
                        <button class="btn btn-outline" onclick="updateAlertStatus(${alert.id}, 'New')" style="margin-left: 0.5rem; padding: 0.25rem 0.5rem; font-size: 0.7rem;">Unmark</button>`
                 : `<button class="btn btn-outline" onclick="updateAlertStatus(${alert.id}, 'Benign')">Mark Benign</button>
                        <button class="btn btn-primary" onclick="investigateAlert(${alert.id}, '${alert.host}')">Investigate</button>`
@@ -177,7 +174,6 @@ function renderAlerts(alerts) {
     });
 }
 
-// Handler for status updates
 window.updateAlertStatus = async function (id, newStatus) {
     try {
         await fetch(`${API_BASE}/alerts/${id}/status`, {
@@ -193,7 +189,6 @@ window.updateAlertStatus = async function (id, newStatus) {
 
 let investigateWin = null;
 
-// Handler for investigating alerts
 window.investigateAlert = async function (id, host) {
     await updateAlertStatus(id, 'Investigating');
 
@@ -206,7 +201,6 @@ window.investigateAlert = async function (id, host) {
     }
 }
 
-// Event Listeners
 document.getElementById('filter-type').addEventListener('change', fetchLogs);
 
 // Init everything
@@ -215,7 +209,7 @@ window.onload = () => {
     fetchLogs();
     fetchAlerts();
 
-    // Clear DB Custom Modal Logic
+    // Clear DB
     document.getElementById('clear-db-btn').addEventListener('click', () => {
         const modal = document.getElementById('clear-db-modal');
         const actions = document.getElementById('clear-db-actions');
@@ -266,7 +260,7 @@ window.onload = () => {
         }
     });
 
-    // Theme toggle
+    // Toggle Theme
     const themes = ['theme-Dark', 'theme-Light', 'theme-Dracula', 'theme-Cyberpunk', 'theme-Solarized'];
 
     const savedTheme = localStorage.getItem('theme') || 'theme-Dark';
@@ -281,7 +275,6 @@ window.onload = () => {
         localStorage.setItem('theme', newTheme);
         document.getElementById('theme-toggle-btn').innerText = `Theme: ${newTheme.replace('theme-', '')}`;
 
-        // Ensure chart grid blends correctly
         if (eventsChart) {
             const isDark = !newTheme.includes('Light');
             eventsChart.options.scales.x.grid.color = isDark ? '#334155' : '#cbd5e1';
@@ -291,12 +284,12 @@ window.onload = () => {
     });
 
     window.addEventListener('storage', (e) => {
-        if(e.key === 'theme') {
+        if (e.key === 'theme') {
             document.body.className = e.newValue;
             currentThemeIndex = themes.indexOf(e.newValue);
-            // In case we receive an invalid theme from elsewhere (safeguard)
-            if (currentThemeIndex === -1) currentThemeIndex = 0; 
-            
+            // Valid themes only!
+            if (currentThemeIndex === -1) currentThemeIndex = 0;
+
             document.getElementById('theme-toggle-btn').innerText = `Theme: ${e.newValue.replace('theme-', '')}`;
             if (eventsChart) {
                 const isDark = !e.newValue.includes('Light');
@@ -306,8 +299,6 @@ window.onload = () => {
             }
         }
     });
-
-    // Placeholder for previous modal listener
 
     // Auto-refresh data every 1 second
     setInterval(() => {

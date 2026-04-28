@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Threat Simulator</title>
-    <link rel="stylesheet" href="/static/styles.css">
+    <title>SIEM Simulator - Threat Panel</title>
+    <link rel="stylesheet" href="/static/styles.css?v=4">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         .dashboard {
@@ -29,7 +29,7 @@
             background-color: var(--panel-bg);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 1.5rem;
+            padding: 1rem 1.5rem 1.5rem 1.5rem;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -39,6 +39,7 @@
             font-size: 1.25rem;
             margin-bottom: 0.5rem;
             color: var(--text-main);
+            font-weight: 400;
         }
 
         .sim-card p {
@@ -56,7 +57,7 @@
             background-color: var(--panel-bg);
             border: 1px solid var(--border);
             border-radius: 12px;
-            padding: 1.5rem;
+            padding: 1rem 1.5rem 1.5rem 1.5rem;
             margin-top: 2rem;
         }
 
@@ -66,21 +67,23 @@
             align-items: center;
         }
 
+        .status-header h2 {
+            font-weight: 400;
+        }
+
         .toggle-btn {
             background-color: #10b981;
-            /* Dark theme success */
             color: white;
             border: 1px solid white;
             padding: 0.5rem 1rem;
             border-radius: 4px;
-            font-weight: 500;
+            font-weight: 400;
             cursor: pointer;
             transition: background-color 0.2s;
         }
 
         .toggle-btn.active {
             background-color: #ef4444;
-            /* Dark theme danger */
         }
 
         #sim-log-output {
@@ -105,7 +108,7 @@
     <div class="dashboard">
         <header class="header" style="justify-content: space-between;">
             <div class="logo">
-                Threat Simulator
+                SIEM Simulator - Threat Panel
             </div>
             <div style="display: flex; gap: 0.5rem; align-items: center;">
                 <button id="theme-toggle-btn" class="btn btn-outline"
@@ -116,7 +119,7 @@
         </header>
 
         <div class="main-content">
-            <h2 style="font-size: 1.5rem; font-weight: 600; margin-bottom: 0.5rem;">Mini Incidents</h2>
+            <h2 style="font-size: 1.5rem; font-weight: 400; margin-bottom: 0.5rem;">Mini Incidents</h2>
             <p style="color: var(--text-muted);">Trigger deterministic, story-driven scenarios. Each burst completes in
                 seconds and is picked up immediately by the SIEM board.</p>
 

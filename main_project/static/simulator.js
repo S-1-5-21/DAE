@@ -47,7 +47,6 @@ async function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-// Background Normal Traffic
 async function generateNormalEvent() {
     const type = randomChoice(["web", "db", "workstation"]);
 
@@ -94,7 +93,7 @@ function toggleActivity() {
 
 document.getElementById('toggle-activity').addEventListener('click', toggleActivity);
 
-// --- SCENARIO TRIGGERS ---
+// Scenarios
 
 window.toggleContinuous = async function (scenario) {
     const btn = document.getElementById(`loop-${scenario}`);
@@ -112,7 +111,7 @@ window.toggleContinuous = async function (scenario) {
         while (continuousLoops[scenario]) {
             await runScenarioLogic(scenario);
             if (continuousLoops[scenario]) {
-                await sleep(5000); // 5 sec gap between loops
+                await sleep(5000); // 5 sec sleep between loops
             }
         }
     }
@@ -199,7 +198,7 @@ async function runScenarioLogic(scenario) {
         await sendLog(host, "database_query", "User executed routine background query successfully");
         await sleep(1000);
         for (let i = 0; i < 4; i++) {
-            await sendLog(host, "data_transfer", `Unusual large outward data transfer to unknown external IP (${(i+1)*50} MB)`);
+            await sendLog(host, "data_transfer", `Unusual large outward data transfer to unknown external IP (${(i + 1) * 50} MB)`);
             await sleep(600);
         }
 

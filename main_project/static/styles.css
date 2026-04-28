@@ -98,7 +98,7 @@ body {
 .header {
     background-color: var(--panel-bg);
     border-bottom: 1px solid var(--border);
-    padding: 1rem 2rem;
+    padding: 0.5rem 1.5rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -167,7 +167,7 @@ body {
 }
 
 .panel-header {
-    padding: 1rem 1.5rem;
+    padding: 0.5rem 1.5rem;
     border-bottom: 1px solid var(--border);
     display: flex;
     justify-content: space-between;
@@ -176,7 +176,7 @@ body {
 
 .panel-header h2 {
     font-size: 1.125rem;
-    font-weight: 600;
+    font-weight: 400;
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -187,7 +187,7 @@ body {
     padding: 0.125rem 0.6rem;
     border-radius: 999px;
     font-size: 0.75rem;
-    font-weight: 600;
+    font-weight: 400;
 }
 
 .alerts-panel {
@@ -229,7 +229,7 @@ body {
 }
 
 .alert-title {
-    font-weight: 600;
+    font-weight: 400;
     font-size: 0.875rem;
     color: var(--danger);
 }
@@ -259,7 +259,7 @@ body {
     border-radius: 4px;
     border: none;
     font-size: 0.75rem;
-    font-weight: 500;
+    font-weight: 400;
     cursor: pointer;
     transition: background-color 0.2s, border-color 0.2s;
 }
@@ -337,7 +337,7 @@ body {
 
 .logs-table th {
     background-color: var(--bg-dark);
-    font-weight: 600;
+    font-weight: 400;
     color: var(--text-muted);
     position: sticky;
     top: 0;
@@ -350,12 +350,12 @@ body {
 
 .tag-error {
     color: var(--danger);
-    font-weight: 500;
+    font-weight: 400;
 }
 
 .tag-failed_login {
     color: var(--warning);
-    font-weight: 500;
+    font-weight: 400;
 }
 
 .tag-successful_login {
@@ -366,7 +366,6 @@ body {
     color: var(--text-muted);
 }
 
-/* Scrollbar styling for modern feel */
 ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
@@ -393,7 +392,6 @@ body {
     font-size: 0.875rem;
 }
 
-/* Modal Styles */
 .modal-overlay {
     position: fixed;
     top: 0;
@@ -428,7 +426,7 @@ body {
 }
 
 .modal-header {
-    padding: 1rem 1.5rem;
+    padding: 0.5rem 1.5rem;
     border-bottom: 1px solid var(--border);
     display: flex;
     justify-content: space-between;
@@ -437,7 +435,7 @@ body {
 
 .modal-header h2 {
     font-size: 1.25rem;
-    font-weight: 600;
+    font-weight: 400;
     color: var(--danger);
 }
 

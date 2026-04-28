@@ -16,25 +16,20 @@ def process_log(log):
     
     with get_db() as conn:
         cursor = conn.cursor()
-        
-        # Insert log
         cursor.execute(
             'INSERT INTO logs (timestamp, host, event_type, raw_message) VALUES (?, ?, ?, ?)',
             (log.timestamp, log.host, log.event_type, log.raw_message)
         )
         conn.commit()
-        
-        # Evaluate rules
+
         for rule in rules:
             if log.event_type == rule.get('event_type'):
                 threshold = rule.get('threshold', 5)
                 interval_seconds = rule.get('interval_seconds', 60)
-                
-                # Check for threshold breaches
                 try:
                     log_time = datetime.fromisoformat(log.timestamp)
                 except ValueError:
-                    continue # Ignore invalid timestamps
+                    continue
                     
                 window_start = (log_time - timedelta(seconds=interval_seconds)).isoformat()
                 
@@ -45,12 +40,12 @@ def process_log(log):
                 
                 row = cursor.fetchone()
                 if row and row['count'] >= threshold:
-                    # Prevent alert spam (only 1 alert per minute per rule+host)
                     cursor.execute('''
                         SELECT count(id) as count FROM alerts
                         WHERE host = ? AND rule_triggered = ? AND timestamp >= ?
                     ''', (log.host, rule['rule_name'], window_start))
                     
+                    # Prevent alert spam (only 1 alert per minute per rule and host).
                     alert_spam_check = cursor.fetchone()
                     if alert_spam_check and alert_spam_check['count'] == 0:
                         alert_msg = f"{rule.get('description')} ({row['count']} events in {interval_seconds}s)"
