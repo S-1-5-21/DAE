@@ -12,15 +12,6 @@
     --font-main: 'Inter', sans-serif;
 }
 
-body.theme-Light {
-    --bg-dark: #f8fafc;
-    --panel-bg: #ffffff;
-    --text-main: #0f172a;
-    --text-muted: #475569;
-    --border: #cbd5e1;
-    --danger-bg: rgba(239, 68, 68, 0.15);
-}
-
 body.theme-Dracula {
     --bg-dark: #282a36;
     --panel-bg: #44475a;
@@ -55,23 +46,6 @@ body.theme-Solarized {
     --danger: #dc322f;
     --success: #859900;
     --warning: #b58900;
-}
-
-body.theme-light .logs-table th {
-    background-color: var(--bg-dark);
-}
-
-body.theme-light .logs-table tr:hover td {
-    background-color: rgba(0, 0, 0, 0.02);
-}
-
-body.theme-light .btn-outline {
-    background-color: #ffffff;
-}
-
-body.theme-light .btn-outline:hover {
-    background-color: #f1f5f9;
-    border-color: #94a3b8;
 }
 
 

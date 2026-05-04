@@ -214,7 +214,7 @@ async function runScenarioLogic(scenario) {
 }
 
 window.onload = () => {
-    const themes = ['theme-Dark', 'theme-Light', 'theme-Dracula', 'theme-Cyberpunk', 'theme-Solarized'];
+    const themes = ['theme-Dark', 'theme-Dracula', 'theme-Cyberpunk', 'theme-Solarized'];
 
     const savedTheme = localStorage.getItem('theme') || 'theme-Dark';
     let currentThemeIndex = themes.indexOf(savedTheme) !== -1 ? themes.indexOf(savedTheme) : 0;

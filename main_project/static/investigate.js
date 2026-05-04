@@ -55,7 +55,7 @@ window.onload = () => {
         document.getElementById('investigate-logs-body').innerHTML = '<tr><td colspan="3" class="empty-state" style="text-align: center;">Append ?host=... to URL</td></tr>';
     }
 
-    const themes = ['theme-Dark', 'theme-Light', 'theme-Dracula', 'theme-Cyberpunk', 'theme-Solarized'];
+    const themes = ['theme-Dark', 'theme-Dracula', 'theme-Cyberpunk', 'theme-Solarized'];
 
     const savedTheme = localStorage.getItem('theme') || 'theme-Dark';
     let currentThemeIndex = themes.indexOf(savedTheme) !== -1 ? themes.indexOf(savedTheme) : 0;

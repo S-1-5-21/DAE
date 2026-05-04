@@ -261,7 +261,7 @@ window.onload = () => {
     });
 
     // Toggle Theme
-    const themes = ['theme-Dark', 'theme-Light', 'theme-Dracula', 'theme-Cyberpunk', 'theme-Solarized'];
+    const themes = ['theme-Dark', 'theme-Dracula', 'theme-Cyberpunk', 'theme-Solarized'];
 
     const savedTheme = localStorage.getItem('theme') || 'theme-Dark';
     let currentThemeIndex = themes.indexOf(savedTheme) !== -1 ? themes.indexOf(savedTheme) : 0;
@@ -276,9 +276,8 @@ window.onload = () => {
         document.getElementById('theme-toggle-btn').innerText = `Theme: ${newTheme.replace('theme-', '')}`;
 
         if (eventsChart) {
-            const isDark = !newTheme.includes('Light');
-            eventsChart.options.scales.x.grid.color = isDark ? '#334155' : '#cbd5e1';
-            eventsChart.options.scales.y.grid.color = isDark ? '#334155' : '#cbd5e1';
+            eventsChart.options.scales.x.grid.color = '#334155';
+            eventsChart.options.scales.y.grid.color = '#334155';
             eventsChart.update();
         }
     });
@@ -292,9 +291,8 @@ window.onload = () => {
 
             document.getElementById('theme-toggle-btn').innerText = `Theme: ${e.newValue.replace('theme-', '')}`;
             if (eventsChart) {
-                const isDark = !e.newValue.includes('Light');
-                eventsChart.options.scales.x.grid.color = isDark ? '#334155' : '#cbd5e1';
-                eventsChart.options.scales.y.grid.color = isDark ? '#334155' : '#cbd5e1';
+                eventsChart.options.scales.x.grid.color = '#334155';
+                eventsChart.options.scales.y.grid.color = '#334155';
                 eventsChart.update();
             }
         }
