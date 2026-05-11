@@ -13,7 +13,9 @@ def init_db():
                 timestamp TEXT,
                 host TEXT,
                 event_type TEXT,
-                raw_message TEXT
+                raw_message TEXT,
+                source_ip TEXT,
+                dest_ip TEXT
             )
         ''')
         cursor.execute('''
@@ -23,7 +25,9 @@ def init_db():
                 host TEXT,
                 rule_triggered TEXT,
                 message TEXT,
-                status TEXT DEFAULT 'New'
+                status TEXT DEFAULT 'New',
+                source_ip TEXT,
+                dest_ip TEXT
             )
         ''')
         conn.commit()

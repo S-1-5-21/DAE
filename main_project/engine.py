@@ -17,8 +17,8 @@ def process_log(log):
     with get_db() as conn:
         cursor = conn.cursor()
         cursor.execute(
-            'INSERT INTO logs (timestamp, host, event_type, raw_message) VALUES (?, ?, ?, ?)',
-            (log.timestamp, log.host, log.event_type, log.raw_message)
+            'INSERT INTO logs (timestamp, host, event_type, raw_message, source_ip, dest_ip) VALUES (?, ?, ?, ?, ?, ?)',
+            (log.timestamp, log.host, log.event_type, log.raw_message, log.source_ip, log.dest_ip)
         )
         conn.commit()
 
@@ -50,7 +50,7 @@ def process_log(log):
                     if alert_spam_check and alert_spam_check['count'] == 0:
                         alert_msg = f"{rule.get('description')} ({row['count']} events in {interval_seconds}s)"
                         cursor.execute(
-                            'INSERT INTO alerts (timestamp, host, rule_triggered, message, status) VALUES (?, ?, ?, ?, ?)',
-                            (log.timestamp, log.host, rule['rule_name'], alert_msg, 'New')
+                            'INSERT INTO alerts (timestamp, host, rule_triggered, message, status, source_ip, dest_ip) VALUES (?, ?, ?, ?, ?, ?, ?)',
+                            (log.timestamp, log.host, rule['rule_name'], alert_msg, 'New', log.source_ip, log.dest_ip)
                         )
                         conn.commit()

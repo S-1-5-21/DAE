@@ -112,6 +112,8 @@ function renderLogs(logs) {
         tr.innerHTML = `
             <td>${timeStr}</td>
             <td>${log.host}</td>
+            <td>${log.source_ip || 'N/A'}</td>
+            <td>${log.dest_ip || 'N/A'}</td>
             <td class="${tagClass}">${log.event_type}</td>
             <td>${log.raw_message}</td>
         `;
@@ -159,6 +161,7 @@ function renderAlerts(alerts) {
             </div>
             <div class="alert-body">
                 <strong>Host:</strong> ${alert.host}<br>
+                <strong>Src IP:</strong> ${alert.source_ip || 'N/A'} | <strong>Dest IP:</strong> ${alert.dest_ip || 'N/A'}<br>
                 ${alert.message}
             </div>
             <div class="alert-actions">
@@ -187,17 +190,19 @@ window.updateAlertStatus = async function (id, newStatus) {
     }
 }
 
-let investigateWin = null;
+let investigateWins = {};
 
 window.investigateAlert = async function (id, host) {
     await updateAlertStatus(id, 'Investigating');
 
     const targetUrl = `/static/investigate.html?host=${host}`;
-    if (!investigateWin || investigateWin.closed) {
-        investigateWin = window.open(targetUrl, 'investigateWindow');
+    const windowName = `investigateWindow_${host.replace(/[^a-zA-Z0-9]/g, '_')}`;
+    
+    if (!investigateWins[host] || investigateWins[host].closed) {
+        investigateWins[host] = window.open(targetUrl, windowName);
     } else {
-        investigateWin.location.href = targetUrl;
-        investigateWin.focus();
+        investigateWins[host].location.href = targetUrl;
+        investigateWins[host].focus();
     }
 }
 

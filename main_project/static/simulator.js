@@ -5,6 +5,14 @@ const DB_HOSTS = ["db-prod-01"];
 const WORKSTATIONS = ["workstation-102", "workstation-107"];
 const USERS = ["jsmith", "bwayne", "ckent", "pwilson"];
 
+const HOST_IPS = {
+    "web-prod-01": "10.0.1.10",
+    "web-prod-02": "10.0.1.11",
+    "db-prod-01": "10.0.2.50",
+    "workstation-102": "192.168.1.102",
+    "workstation-107": "192.168.1.107"
+};
+
 let activityTimer = null;
 const continuousLoops = {};
 
@@ -22,12 +30,14 @@ function logToOutput(msg, color = "#94a3b8") {
     out.prepend(line);
 }
 
-async function sendLog(host, eventType, message) {
+async function sendLog(host, eventType, message, sourceIp = null, destIp = null) {
     const logEntry = {
         timestamp: new Date().toISOString(),
         host: host,
         event_type: eventType,
-        raw_message: message
+        raw_message: message,
+        source_ip: sourceIp,
+        dest_ip: destIp
     };
 
     try {
@@ -36,7 +46,7 @@ async function sendLog(host, eventType, message) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(logEntry)
         });
-        logToOutput(`✓ ${host} | ${eventType} | ${message}`);
+        logToOutput(`✓ ${host} [Src: ${sourceIp || 'N/A'} -> Dest: ${destIp || 'N/A'}] | ${eventType} | ${message}`);
     } catch (e) {
         logToOutput(`✗ ERROR: Could not send log to API`, 'var(--danger)');
         console.error(e);
@@ -53,15 +63,17 @@ async function generateNormalEvent() {
     if (type === "web") {
         const host = randomChoice(WEB_HOSTS);
         const evt = randomChoice(["page_view", "api_request"]);
-        await sendLog(host, evt, `Standard ${evt.replace('_', ' ')} from client IP`);
+        const clientIp = "203.0.113." + Math.floor(Math.random() * 255);
+        await sendLog(host, evt, `Standard ${evt.replace('_', ' ')} from client IP`, clientIp, HOST_IPS[host]);
     } else if (type === "db") {
         const host = randomChoice(DB_HOSTS);
-        await sendLog(host, 'database_query', "Executed routine background query successfully");
+        const webHost = randomChoice(WEB_HOSTS);
+        await sendLog(host, 'database_query', "Executed routine background query successfully", HOST_IPS[webHost], HOST_IPS[host]);
     } else {
         const host = randomChoice(WORKSTATIONS);
         const user = randomChoice(USERS);
         const evt = randomChoice(["successful_login", "file_access"]);
-        await sendLog(host, evt, `User ${user} ${evt.replace('_', ' ')} routinely`);
+        await sendLog(host, evt, `User ${user} ${evt.replace('_', ' ')} routinely`, HOST_IPS[host], HOST_IPS[host]);
     }
 }
 
@@ -128,42 +140,45 @@ async function runScenarioLogic(scenario) {
         const host = randomChoice(WORKSTATIONS);
         const targetUser = randomChoice(["bwayne", "pwilson", "jsmith"]);
         const attackerIp = "192.168." + Math.floor(Math.random() * 255) + "." + Math.floor(Math.random() * 255);
-        await sendLog(host, "successful_login", `User ${randomChoice(USERS)} logged in successfully.`);
+        await sendLog(host, "successful_login", `User ${randomChoice(USERS)} logged in successfully.`, attackerIp, HOST_IPS[host]);
         await sleep(1000);
         for (let i = 0; i < 6; i++) {
-            await sendLog(host, "failed_login", `Repeated authentication failure for user ${targetUser} from IP ${attackerIp}`);
+            await sendLog(host, "failed_login", `Repeated authentication failure for user ${targetUser} from IP ${attackerIp}`, attackerIp, HOST_IPS[host]);
             await sleep(300);
         }
 
     } else if (scenario === 'server_failure') {
         const host = randomChoice(WEB_HOSTS);
         const errs = ["Database connection lost", "Gateway timeout 504", "Out of memory error", "Disk read failure on volume 1"];
-        await sendLog(host, "page_view", "User loaded the dashboard successfully.");
+        const clientIp = "203.0.113." + Math.floor(Math.random() * 255);
+        await sendLog(host, "page_view", "User loaded the dashboard successfully.", clientIp, HOST_IPS[host]);
         await sleep(1000);
         for (let i = 0; i < 6; i++) {
-            await sendLog(host, "error", `Critical service timeout: ${randomChoice(errs)} (${i + 1})`);
+            await sendLog(host, "error", `Critical service timeout: ${randomChoice(errs)} (${i + 1})`, HOST_IPS[host], HOST_IPS[host]);
             await sleep(400);
         }
 
     } else if (scenario === 'file_access') {
         const host = randomChoice(WORKSTATIONS);
         const files = ["/etc/shadow", "HR_Payroll_2026.xlsx", "Customer_Data_Dump.csv", "SSH_private_keys", "/var/log/auth.log"];
-        await sendLog(host, "file_access", "User accessed public document /docs/policy.pdf");
+        await sendLog(host, "file_access", "User accessed public document /docs/policy.pdf", HOST_IPS[host], HOST_IPS[host]);
         await sleep(1000);
         for (let i = 0; i < 6; i++) {
-            await sendLog(host, "file_access", `Restricted file access: Read attempt on ${randomChoice(files)} (${i + 1})`);
+            await sendLog(host, "file_access", `Restricted file access: Read attempt on ${randomChoice(files)} (${i + 1})`, HOST_IPS[host], HOST_IPS[host]);
             await sleep(300);
         }
 
     } else if (scenario === 'traffic_surge') {
         const host = randomChoice(WEB_HOSTS);
         const targetApi = `/api/v1/data-${Math.floor(Math.random() * 100)}`;
+        const attackerIp = "198.51.100." + Math.floor(Math.random() * 255);
         for (let i = 0; i < 2; i++) {
-            await sendLog(host, "api_request", "Normal API request /api/v1/health");
+            const clientIp = "203.0.113." + Math.floor(Math.random() * 255);
+            await sendLog(host, "api_request", "Normal API request /api/v1/health", clientIp, HOST_IPS[host]);
             await sleep(500);
         }
         for (let i = 0; i < 16; i++) {
-            await sendLog(host, "api_request", `Overwhelming API request flood from single origin targeting ${targetApi} (${i + 1})`);
+            await sendLog(host, "api_request", `Overwhelming API request flood from single origin targeting ${targetApi} (${i + 1})`, attackerIp, HOST_IPS[host]);
             await sleep(50);
         }
 
@@ -177,37 +192,39 @@ async function runScenarioLogic(scenario) {
             "created a hidden admin account",
             "disabled endpoint protection"
         ];
-        await sendLog(host, "successful_login", `Standard user ${user} logged in.`);
+        await sendLog(host, "successful_login", `Standard user ${user} logged in.`, HOST_IPS[host], HOST_IPS[host]);
         await sleep(1000);
         for (let i = 0; i < 4; i++) {
-            await sendLog(host, "admin_action", `Admin-only action executed: ${user} ${randomChoice(actions)}.`);
+            await sendLog(host, "admin_action", `Admin-only action executed: ${user} ${randomChoice(actions)}.`, HOST_IPS[host], HOST_IPS[host]);
             await sleep(500);
         }
     } else if (scenario === 'port_scan') {
         const attackerIp = "192.168.1." + Math.floor(Math.random() * 255);
         const targetHost = randomChoice(WEB_HOSTS);
-        await sendLog(targetHost, "network_connection", `Inbound connection from ${attackerIp} on port 80`);
+        await sendLog(targetHost, "network_connection", `Inbound connection from ${attackerIp} on port 80`, attackerIp, HOST_IPS[targetHost]);
         await sleep(500);
         for (let i = 0; i < 6; i++) {
-            await sendLog(targetHost, "network_connection", `Blocked connection from ${attackerIp} on rapid port progression (Port ${1024 + i * 15})`);
+            await sendLog(targetHost, "network_connection", `Blocked connection from ${attackerIp} on rapid port progression (Port ${1024 + i * 15})`, attackerIp, HOST_IPS[targetHost]);
             await sleep(200);
         }
 
     } else if (scenario === 'data_exfiltration') {
         const host = randomChoice(DB_HOSTS);
-        await sendLog(host, "database_query", "User executed routine background query successfully");
+        const webHost = randomChoice(WEB_HOSTS);
+        await sendLog(host, "database_query", "User executed routine background query successfully", HOST_IPS[webHost], HOST_IPS[host]);
         await sleep(1000);
+        const externalIp = "198.51.100." + Math.floor(Math.random() * 255);
         for (let i = 0; i < 4; i++) {
-            await sendLog(host, "data_transfer", `Unusual large outward data transfer to unknown external IP (${(i + 1) * 50} MB)`);
+            await sendLog(host, "data_transfer", `Unusual large outward data transfer to unknown external IP (${(i + 1) * 50} MB)`, HOST_IPS[host], externalIp);
             await sleep(600);
         }
 
     } else if (scenario === 'malware_execution') {
         const host = randomChoice(WORKSTATIONS);
-        await sendLog(host, "file_access", "User downloaded email attachment 'invoice_final.doc'");
+        await sendLog(host, "file_access", "User downloaded email attachment 'invoice_final.doc'", HOST_IPS[host], HOST_IPS[host]);
         await sleep(1000);
         for (let i = 0; i < 3; i++) {
-            await sendLog(host, "process_creation", "Suspicious process spawned: powershell.exe -ExecutionPolicy Bypass -encodedCommand...");
+            await sendLog(host, "process_creation", "Suspicious process spawned: powershell.exe -ExecutionPolicy Bypass -encodedCommand...", HOST_IPS[host], HOST_IPS[host]);
             await sleep(800);
         }
     }

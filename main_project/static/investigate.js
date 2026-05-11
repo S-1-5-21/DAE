@@ -10,9 +10,14 @@ async function fetchTargetLogs() {
         tbody.innerHTML = '';
 
         if (logs.length === 0) {
-            tbody.innerHTML = '<tr><td colspan="3" class="empty-state" style="text-align: center;">No logs found...</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" class="empty-state" style="text-align: center;">No logs found...</td></tr>';
             return;
         }
+
+        // Try to find the host IP from the logs
+        const hostIp = logs.find(l => l.host === currentHost && (l.source_ip || l.dest_ip))?.source_ip ||
+            logs.find(l => l.host === currentHost && l.dest_ip)?.dest_ip || 'Unknown IP';
+        document.getElementById('target-host-display').innerText = `${currentHost} (${hostIp})`;
 
         logs.forEach(log => {
             const tr = document.createElement('tr');
@@ -29,6 +34,8 @@ async function fetchTargetLogs() {
 
             tr.innerHTML = `
                 <td>${timeStr}</td>
+                <td>${log.source_ip || 'N/A'}</td>
+                <td>${log.dest_ip || 'N/A'}</td>
                 <td class="${tagClass}">${log.event_type}</td>
                 <td>${log.raw_message}</td>
             `;
@@ -36,7 +43,7 @@ async function fetchTargetLogs() {
         });
     } catch (e) {
         console.error("Error fetching logs for host:", e);
-        document.getElementById('investigate-logs-body').innerHTML = '<tr><td colspan="3" class="empty-state" style="color:var(--danger); text-align: center;">Error fetching logs... check console.</td></tr>';
+        document.getElementById('investigate-logs-body').innerHTML = '<tr><td colspan="5" class="empty-state" style="color:var(--danger); text-align: center;">Error fetching logs... check console.</td></tr>';
     }
 }
 
@@ -52,7 +59,7 @@ window.onload = () => {
         fetchTargetLogs();
     } else {
         document.getElementById('target-host-display').innerText = "No Host Specified";
-        document.getElementById('investigate-logs-body').innerHTML = '<tr><td colspan="3" class="empty-state" style="text-align: center;">Append ?host=... to URL</td></tr>';
+        document.getElementById('investigate-logs-body').innerHTML = '<tr><td colspan="5" class="empty-state" style="text-align: center;">Append ?host=... to URL</td></tr>';
     }
 
     const themes = ['theme-Dark', 'theme-Dracula', 'theme-Cyberpunk', 'theme-Solarized'];
